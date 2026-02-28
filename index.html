@@ -443,6 +443,84 @@
         }
 
         /* ═══════════════════════════════════════
+           ENGAGEMENT MODEL
+           ═══════════════════════════════════════ */
+        .engagement {
+            padding: 8rem 3.5rem;
+            position: relative;
+        }
+
+        .engagement-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .engagement-heading {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 300;
+            font-size: clamp(2.2rem, 4vw, 3.2rem);
+            line-height: 1.2;
+            color: var(--text-dark);
+            margin-bottom: 3.5rem;
+        }
+
+        .engagement-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .engagement-text p {
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 300;
+            font-size: 1.02rem;
+            line-height: 1.8;
+            color: #3a3a3a;
+            margin-bottom: 1.5rem;
+        }
+
+        .engagement-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        .engagement-principles {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .principle {
+            display: flex;
+            gap: 1.2rem;
+            align-items: flex-start;
+        }
+
+        .principle-marker {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 300;
+            font-size: 1.2rem;
+            color: var(--gold);
+            flex-shrink: 0;
+            line-height: 1.6;
+        }
+
+        .principle div {
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 300;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #3a3a3a;
+        }
+
+        .principle strong {
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        
+
+        /* ═══════════════════════════════════════
            SERVICES
            ═══════════════════════════════════════ */
         .services {
@@ -639,6 +717,50 @@
 
         .platform-name:hover {
             opacity: 0.7;
+        }
+
+        /* ─── FOUNDER LINE ─── */
+        .founder-line {
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .founder-divider {
+            width: 40px;
+            height: 1px;
+            background: var(--gold);
+            opacity: 0.4;
+            margin: 0 auto 2.5rem;
+        }
+
+        .founder-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 400;
+            font-size: 1.4rem;
+            letter-spacing: 0.06em;
+            color: var(--text-dark);
+            margin-bottom: 0.4rem;
+        }
+
+        .founder-title {
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 400;
+            font-size: 0.7rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--forest);
+            opacity: 0.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .founder-note {
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 300;
+            font-size: 0.92rem;
+            line-height: 1.7;
+            color: #4a4a4a;
+            max-width: 480px;
+            margin: 0 auto;
         }
 
         /* ═══════════════════════════════════════
@@ -868,6 +990,16 @@
            RESPONSIVE — SMALL TABLET (≤900px)
            ═══════════════════════════════════════ */
         @media (max-width: 900px) {
+
+            .engagement {
+                padding: 6rem 2rem;
+            }
+
+            .engagement-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            
             .nav {
                 padding: 1.2rem 2rem;
             }
@@ -995,6 +1127,10 @@
         @media (max-width: 600px) {
             .nav {
                 padding: 1rem 1.5rem;
+            }
+
+            .engagement {
+                padding: 5rem 1.5rem;
             }
 
             .nav-brand {
@@ -1140,7 +1276,7 @@
         <div class="hero-content">
             <p class="hero-eyebrow">Data Engineering · Analytics · AI Governance</p>
             <h1 class="hero-headline">Somebody has to<br><em>own the results.</em></h1>
-            <p class="hero-body">We help mid-market companies build trustworthy data and AI systems — with the expertise of an enterprise team, the accountability of a single partner.</p>
+            <p class="hero-body">We help growing companies build trustworthy data and AI systems — with the attentiveness of a private advisory firm and the technical depth of a senior engineering team.</p>
             <a href="mailto:hello@aquilasolutionsgroup.com" class="hero-cta">
                 Begin a Conversation <span class="arrow">→</span>
             </a>
@@ -1173,6 +1309,43 @@
         </div>
     </section>
 
+    <!-- ═══════════════════════════════════════
+         ENGAGEMENT MODEL
+         ═══════════════════════════════════════ -->
+    <section class="engagement">
+        <div class="engagement-inner">
+            <p class="section-eyebrow reveal">How We Work</p>
+            <h2 class="engagement-heading reveal reveal-delay-1">Private advisory, applied to data.</h2>
+            <div class="engagement-grid">
+                <div class="engagement-text">
+                    <p class="reveal reveal-delay-2">Aquila is modeled after the relationship-driven approach of private advisory and wealth management firms. Every engagement is a managed relationship with a dedicated team, a singular point of contact, and proactive service as the default — not something you have to ask for.</p>
+                    <p class="reveal reveal-delay-3">We don't wait for you to surface problems. We monitor, anticipate, and resolve — so that every interaction with Aquila makes your work easier, not harder.</p>
+                </div>
+                <div class="engagement-principles reveal reveal-delay-2">
+                    <div class="principle">
+                        <span class="principle-marker">—</span>
+                        <div>
+                            <strong>Dedicated coverage.</strong> Your team knows your data, your stakeholders, and the state of every active workstream. No rotating cast. No handoffs.
+                        </div>
+                    </div>
+                    <div class="principle">
+                        <span class="principle-marker">—</span>
+                        <div>
+                            <strong>Proactive by design.</strong> We identify and remove bottlenecks before they reach you. If something shifts, we act on it the same week.
+                        </div>
+                    </div>
+                    <div class="principle">
+                        <span class="principle-marker">—</span>
+                        <div>
+                            <strong>Principal-led delivery.</strong> Senior practitioners scope, build, and present the work. You're never downstream of someone learning on your account.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
     <!-- ═══════════════════════════════════════
          SERVICES
          ═══════════════════════════════════════ -->
@@ -1272,6 +1445,13 @@
                 <span class="platform-name">Databricks</span>
                 <span class="platform-name">Snowflake</span>
                 <span class="platform-name">AWS</span>
+            </div>
+
+            <div class="founder-line reveal">
+                <div class="founder-divider"></div>
+                <p class="founder-name">Tori-Ann Holness</p>
+                <p class="founder-title">Founder &amp; CEO</p>
+                <p class="founder-note">Hands-on practitioner. Every pipeline, every dashboard, every architecture decision — built and delivered directly.</p>
             </div>
         </div>
     </section>
