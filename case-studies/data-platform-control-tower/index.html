@@ -4,57 +4,219 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Data Platform Control Tower | Aquila Solutions Group</title>
+  <meta name="description" content="Interactive data platform control tower demo with pipeline health, lineage, freshness, data quality checks, backfills, and stakeholder metrics.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../case-study.css">
+  <link rel="stylesheet" href="control-tower.css">
 </head>
 <body>
-  <div class="shell">
+  <div class="shell tower-shell">
     <header class="topbar">
       <a class="brand" href="../../">Aquila Solutions Group</a>
       <a class="back-link" href="../../#case-studies">Back to case studies</a>
     </header>
+
     <main>
-      <section class="hero">
+      <section class="hero tower-hero">
         <div>
-          <p class="eyebrow">Case Study | Data Engineering</p>
+          <p class="eyebrow">Interactive Demo | Data Engineering</p>
           <h1>Data Platform Control Tower</h1>
-          <p class="summary">A pipeline control plane for monitoring ingestion, freshness, lineage, data quality checks, backfills, and stakeholder-ready metrics.</p>
+          <p class="summary">A portfolio-grade control plane for monitoring ingestion, freshness, lineage, data quality, backfills, and stakeholder-ready metrics across a modern analytics platform.</p>
         </div>
-        <aside class="status-card">
-          <h2>Build Status</h2>
-          <ul class="status-list">
-            <li>Phase: project shell created</li>
-            <li>Next: choose data domain</li>
-            <li>Goal: pipeline health demo</li>
-          </ul>
+        <aside class="status-card control-card">
+          <h2>Platform Snapshot</h2>
+          <dl class="snapshot-grid">
+            <div>
+              <dt>Healthy pipelines</dt>
+              <dd id="healthyCount">0</dd>
+            </div>
+            <div>
+              <dt>Open incidents</dt>
+              <dd id="incidentCount">0</dd>
+            </div>
+            <div>
+              <dt>Rows processed</dt>
+              <dd id="rowsProcessed">0</dd>
+            </div>
+            <div>
+              <dt>Freshness SLA</dt>
+              <dd id="freshnessSla">0%</dd>
+            </div>
+          </dl>
         </aside>
       </section>
-      <section class="grid">
-        <article class="card">
-          <h2>Client Surface</h2>
-          <ul>
-            <li>Pipeline health dashboard</li>
-            <li>Data quality scorecards</li>
-            <li>Backfill and retry states</li>
-          </ul>
-        </article>
-        <article class="card">
-          <h2>System Layer</h2>
-          <ul>
-            <li>Bronze/silver/gold flow</li>
-            <li>Lineage and freshness checks</li>
-            <li>Orchestration status</li>
-          </ul>
-        </article>
-        <article class="card">
-          <h2>Stack Signal</h2>
-          <p>Designed to show senior data engineering patterns: orchestration, monitoring, validation, warehouse modeling, and operational resilience.</p>
-          <p class="stack">SQL | Python | dbt | Airflow</p>
-        </article>
+
+      <section class="tower-console" aria-label="Data platform control tower">
+        <div class="toolbar">
+          <div>
+            <p class="eyebrow">Control Surface</p>
+            <h2>Pipeline health by domain.</h2>
+          </div>
+          <div class="toolbar-controls">
+            <label>
+              <span>Domain</span>
+              <select id="domainFilter">
+                <option value="all">All domains</option>
+                <option value="Payments">Payments</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Operations">Operations</option>
+                <option value="Product">Product</option>
+              </select>
+            </label>
+            <label>
+              <span>Run window</span>
+              <select id="windowFilter">
+                <option value="today">Today</option>
+                <option value="week">Trailing 7 days</option>
+                <option value="month">Trailing 30 days</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div class="kpi-grid">
+          <article class="kpi-card">
+            <span>Fresh data assets</span>
+            <strong id="freshAssets">0</strong>
+            <p>Assets that cleared freshness checks in the selected window.</p>
+          </article>
+          <article class="kpi-card">
+            <span>Quality pass rate</span>
+            <strong id="qualityRate">0%</strong>
+            <p>dbt-style checks passing across row counts, uniqueness, nulls, and accepted values.</p>
+          </article>
+          <article class="kpi-card">
+            <span>Blocked dashboards</span>
+            <strong id="blockedDashboards">0</strong>
+            <p>Business-facing reports held back because upstream quality checks failed.</p>
+          </article>
+          <article class="kpi-card">
+            <span>Backfill hours</span>
+            <strong id="backfillHours">0h</strong>
+            <p>Estimated recovery time for active replay and repair jobs.</p>
+          </article>
+        </div>
+
+        <div class="main-grid">
+          <section class="panel pipeline-panel">
+            <div class="panel-title">
+              <div>
+                <p class="eyebrow">Orchestration</p>
+                <h2>Pipeline run states.</h2>
+              </div>
+              <button type="button" id="rerunButton">Simulate Rerun</button>
+            </div>
+            <div id="pipelineList" class="pipeline-list"></div>
+          </section>
+
+          <aside class="panel incident-panel">
+            <p class="eyebrow">Attention Queue</p>
+            <h2>Open checks and repair actions.</h2>
+            <div id="incidentList" class="incident-list"></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="lineage-section">
+        <div class="section-head compact-head">
+          <div>
+            <p class="eyebrow">Lineage View</p>
+            <h2>From source APIs to trusted marts.</h2>
+          </div>
+          <p>The control tower shows where data is coming from, what transformation layer it is in, and whether the resulting metrics are safe for stakeholders.</p>
+        </div>
+        <div class="lineage-board" aria-label="Data lineage board">
+          <div class="lineage-column">
+            <h3>Sources</h3>
+            <span>Stripe API</span>
+            <span>PayPal API</span>
+            <span>GA4 Export</span>
+            <span>SQL Server CRM</span>
+            <span>Product DB</span>
+          </div>
+          <div class="lineage-column">
+            <h3>Raw Landing</h3>
+            <span>S3 raw files</span>
+            <span>API payload archive</span>
+            <span>Event partitions</span>
+          </div>
+          <div class="lineage-column bronze">
+            <h3>Bronze</h3>
+            <span>append-only ingestion</span>
+            <span>schema drift capture</span>
+            <span>source row counts</span>
+          </div>
+          <div class="lineage-column silver">
+            <h3>Silver</h3>
+            <span>deduped records</span>
+            <span>normalized keys</span>
+            <span>currency and timezone rules</span>
+          </div>
+          <div class="lineage-column gold">
+            <h3>Gold</h3>
+            <span>revenue mart</span>
+            <span>marketing attribution mart</span>
+            <span>customer health mart</span>
+          </div>
+          <div class="lineage-column">
+            <h3>Consumers</h3>
+            <span>BI dashboards</span>
+            <span>AI reporting layer</span>
+            <span>finance exports</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="quality-section">
+        <div class="section-head compact-head">
+          <div>
+            <p class="eyebrow">Data Quality</p>
+            <h2>Checks that decide whether data ships.</h2>
+          </div>
+          <p>Each check has an owner, severity, affected asset, and action. In production this maps to Airflow/Dagster run state, dbt tests, warehouse audit tables, and alert routing.</p>
+        </div>
+        <div id="qualityGrid" class="quality-grid"></div>
+      </section>
+
+      <section class="code-section tower-code">
+        <div class="section-head compact-head">
+          <div>
+            <p class="eyebrow">Implementation Pattern</p>
+            <h2>Code-level signals.</h2>
+          </div>
+          <p>This is the kind of deterministic engineering layer that makes dashboards, AI summaries, and stakeholder reports reliable.</p>
+        </div>
+        <div class="code-grid">
+          <article class="code-card">
+            <h3>Airflow/Dagster-style asset gate</h3>
+            <pre><code>if freshness_minutes > sla_minutes:
+    block_asset("gold_revenue_mart")
+    notify(owner="data-platform")
+
+if row_delta_pct > 12:
+    create_incident(
+        severity="high",
+        check="source_row_count_delta"
+    )</code></pre>
+          </article>
+          <article class="code-card">
+            <h3>SQL reconciliation check</h3>
+            <pre><code>select
+  source_day,
+  sum(source_amount) as source_total,
+  sum(mart_amount) as mart_total,
+  abs(sum(source_amount) - sum(mart_amount)) as variance
+from reconciliation.daily_payments
+group by source_day
+having variance > 100;</code></pre>
+          </article>
+        </div>
       </section>
     </main>
   </div>
+
+  <script src="control-tower.js"></script>
 </body>
 </html>
