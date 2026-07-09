@@ -349,6 +349,13 @@
       flex-direction: column;
       justify-content: space-between;
       min-height: 260px;
+      transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+    }
+
+    .case-card:hover {
+      border-color: rgba(27, 77, 62, 0.34);
+      box-shadow: 0 18px 48px rgba(15, 46, 37, 0.08);
+      transform: translateY(-3px);
     }
 
     .case-kicker,
@@ -614,46 +621,46 @@
           <p>Each case study is framed as a product surface: architecture, interface, code patterns, data contracts, and operational controls required to move from AI demo to deployed system.</p>
         </div>
         <div class="case-grid">
-          <article class="case-card">
+          <a class="case-card" href="case-studies/agent-operations-console/">
             <div>
               <p class="case-kicker">Agents</p>
               <h3>AI Agent Operations Console</h3>
               <p>A control surface for prompts, tool calls, run logs, confidence scores, review states, and database-backed task history.</p>
             </div>
             <p class="case-stack">Next.js | Supabase | Claude</p>
-          </article>
-          <article class="case-card">
+          </a>
+          <a class="case-card" href="case-studies/rag-knowledge-base/">
             <div>
               <p class="case-kicker">Retrieval</p>
               <h3>RAG Knowledge Base With Evidence Review</h3>
               <p>Document ingestion, embedding, metadata filtering, source-grounded answers, and retrieval evaluation for decision workflows.</p>
             </div>
             <p class="case-stack">Pinecone | Postgres | OpenAI</p>
-          </article>
-          <article class="case-card">
+          </a>
+          <a class="case-card" href="case-studies/document-intelligence-workbench/">
             <div>
               <p class="case-kicker">Documents</p>
               <h3>AI Document Intelligence Workbench</h3>
               <p>PDF and scan extraction with schema validation, confidence gates, field-level evidence, and a human review queue.</p>
             </div>
             <p class="case-stack">Python | AWS | LLM APIs</p>
-          </article>
-          <article class="case-card">
+          </a>
+          <a class="case-card" href="case-studies/data-platform-control-tower/">
             <div>
               <p class="case-kicker">Data Platform</p>
               <h3>Data Platform Control Tower</h3>
               <p>Pipeline health, bronze/silver/gold flow, data quality checks, lineage, backfills, and stakeholder-ready metrics.</p>
             </div>
             <p class="case-stack">SQL | dbt | Airflow</p>
-          </article>
-          <article class="case-card">
+          </a>
+          <a class="case-card" href="case-studies/ai-analytics-dashboard/">
             <div>
               <p class="case-kicker">Analytics</p>
               <h3>AI Analytics Dashboard for Agencies</h3>
               <p>Client dashboards that combine performance data, charts, monthly AI summaries, and recommendation workflows.</p>
             </div>
             <p class="case-stack">React | APIs | Claude</p>
-          </article>
+          </a>
         </div>
       </div>
     </section>
