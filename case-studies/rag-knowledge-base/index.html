@@ -4,57 +4,221 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RAG Knowledge Base | Aquila Solutions Group</title>
+  <meta name="description" content="Interactive RAG knowledge base demo with retrieval, vector-search style ranking, source evidence, citations, and answer quality checks.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../case-study.css">
+  <link rel="stylesheet" href="rag-demo.css">
 </head>
 <body>
-  <div class="shell">
+  <div class="shell rag-shell">
     <header class="topbar">
       <a class="brand" href="../../">Aquila Solutions Group</a>
       <a class="back-link" href="../../#case-studies">Back to case studies</a>
     </header>
+
     <main>
-      <section class="hero">
+      <section class="hero rag-hero">
         <div>
-          <p class="eyebrow">Case Study | RAG Systems</p>
+          <p class="eyebrow">Interactive Demo | RAG Systems</p>
           <h1>RAG Knowledge Base With Evidence Review</h1>
-          <p class="summary">An interactive retrieval workflow that turns documents into searchable vectors, retrieves relevant chunks, and answers with source evidence.</p>
+          <p class="summary">Search a sample operations knowledge base, inspect retrieved chunks, and see how a grounded answer is assembled with citations, metadata, and quality checks.</p>
         </div>
-        <aside class="status-card">
-          <h2>Build Status</h2>
+        <aside class="status-card architecture-card">
+          <h2>Pipeline Shape</h2>
+          <div class="pipeline-mini" aria-label="RAG pipeline architecture">
+            <span>Sources</span>
+            <span>Chunk</span>
+            <span>Embed</span>
+            <span>Vector DB</span>
+            <span>Answer</span>
+          </div>
           <ul class="status-list">
-            <li>Phase: project shell created</li>
-            <li>Next: define knowledge source</li>
-            <li>Goal: searchable evidence demo</li>
+            <li>Knowledge source: sample SOPs, policies, runbooks, and playbooks</li>
+            <li>Retrieval: browser-side scoring that mirrors vector ranking behavior</li>
+            <li>Output: answer, citations, scorecard, and review flags</li>
           </ul>
         </aside>
       </section>
-      <section class="grid">
-        <article class="card">
-          <h2>Client Surface</h2>
-          <ul>
-            <li>Search input</li>
-            <li>Source cards</li>
-            <li>Cited answer panel</li>
-          </ul>
-        </article>
-        <article class="card">
-          <h2>System Layer</h2>
-          <ul>
-            <li>Chunking strategy</li>
-            <li>Vector retrieval</li>
-            <li>Metadata filters and evals</li>
-          </ul>
-        </article>
-        <article class="card">
-          <h2>Stack Signal</h2>
-          <p>Designed to show vector databases, RAG architecture, source-grounded generation, retrieval scoring, and answer quality checks.</p>
-          <p class="stack">Pinecone | Postgres | OpenAI/Claude</p>
-        </article>
+
+      <section class="demo-console" aria-label="RAG demo console">
+        <div class="query-panel">
+          <div class="panel-heading">
+            <p class="eyebrow">Try The Retrieval Flow</p>
+            <h2>Ask the knowledge base a business question.</h2>
+          </div>
+
+          <label class="input-label" for="queryInput">Question</label>
+          <textarea id="queryInput" rows="4">What happens if a vendor invoice is missing a purchase order?</textarea>
+
+          <div class="sample-row" aria-label="Sample questions">
+            <button type="button" class="sample-chip" data-query="What happens if a vendor invoice is missing a purchase order?">Invoice exception</button>
+            <button type="button" class="sample-chip" data-query="How often should API keys be rotated for high risk vendors?">API key rotation</button>
+            <button type="button" class="sample-chip" data-query="What needs to be ready before a new client onboarding kickoff?">Client onboarding</button>
+            <button type="button" class="sample-chip" data-query="How should support handle a critical incident?">Critical support SLA</button>
+            <button type="button" class="sample-chip" data-query="What is required before launching a new ecommerce product listing?">Product launch</button>
+          </div>
+
+          <div class="control-grid">
+            <label>
+              <span>Source filter</span>
+              <select id="sourceFilter">
+                <option value="all">All sources</option>
+                <option value="SOP">SOP</option>
+                <option value="Policy">Policy</option>
+                <option value="Runbook">Runbook</option>
+                <option value="Playbook">Playbook</option>
+                <option value="Product">Product docs</option>
+              </select>
+            </label>
+            <label>
+              <span>Generation mode</span>
+              <select id="modelMode">
+                <option value="hybrid">Hybrid LLM router</option>
+                <option value="claude">Claude-style synthesis</option>
+                <option value="openai">OpenAI-style synthesis</option>
+              </select>
+            </label>
+            <label>
+              <span>Minimum retrieval score: <strong id="thresholdValue">0.35</strong></span>
+              <input id="thresholdInput" type="range" min="0.2" max="0.75" value="0.35" step="0.05">
+            </label>
+          </div>
+
+          <button class="run-button" type="button" id="runButton">Run Retrieval</button>
+        </div>
+
+        <div class="answer-panel">
+          <div class="panel-heading">
+            <p class="eyebrow">Grounded Answer</p>
+            <h2 id="answerTitle">Vendor invoice exception path</h2>
+          </div>
+          <div id="answerBody" class="answer-body"></div>
+          <div id="citationRow" class="citation-row"></div>
+        </div>
+
+        <aside class="metrics-panel">
+          <div>
+            <p class="eyebrow">Retrieval Metrics</p>
+            <dl class="metric-grid">
+              <div>
+                <dt>Chunks scanned</dt>
+                <dd id="chunksScanned">0</dd>
+              </div>
+              <div>
+                <dt>Matches returned</dt>
+                <dd id="matchesReturned">0</dd>
+              </div>
+              <div>
+                <dt>Top score</dt>
+                <dd id="topScore">0.00</dd>
+              </div>
+              <div>
+                <dt>Coverage</dt>
+                <dd id="coverageScore">0%</dd>
+              </div>
+            </dl>
+          </div>
+          <div>
+            <p class="eyebrow">Quality Gate</p>
+            <ul id="evalList" class="eval-list"></ul>
+          </div>
+        </aside>
+      </section>
+
+      <section class="source-section">
+        <div class="section-head compact-head">
+          <div>
+            <p class="eyebrow">Evidence Review</p>
+            <h2>Retrieved chunks and metadata.</h2>
+          </div>
+          <p>Clients can see which source records shaped the answer. In production, these cards would map back to Postgres metadata and Pinecone vector IDs.</p>
+        </div>
+        <div id="sourceResults" class="source-grid"></div>
+      </section>
+
+      <section class="architecture-section">
+        <div class="section-head compact-head">
+          <div>
+            <p class="eyebrow">System Architecture</p>
+            <h2>What the demo is proving.</h2>
+          </div>
+          <p>The page is static for portability, but the architecture mirrors the production pattern clients ask for: ingest documents, store metadata, embed chunks, retrieve, rerank, answer, and evaluate.</p>
+        </div>
+
+        <div class="architecture-grid">
+          <article class="arch-node">
+            <span>01</span>
+            <h3>Knowledge Sources</h3>
+            <p>SOPs, policies, runbooks, product docs, support playbooks, and uploaded client documents.</p>
+          </article>
+          <article class="arch-node">
+            <span>02</span>
+            <h3>Chunk + Metadata</h3>
+            <p>Split documents by section, preserve source IDs, owners, update dates, access level, and source type.</p>
+          </article>
+          <article class="arch-node">
+            <span>03</span>
+            <h3>Embed + Index</h3>
+            <p>Generate embeddings, write vectors to Pinecone or pgvector, and keep Postgres as the source-of-truth metadata layer.</p>
+          </article>
+          <article class="arch-node">
+            <span>04</span>
+            <h3>Retrieve + Rerank</h3>
+            <p>Use semantic search, metadata filters, hybrid lexical ranking, and reranking before sending context to the model.</p>
+          </article>
+          <article class="arch-node">
+            <span>05</span>
+            <h3>Generate + Cite</h3>
+            <p>Ask the LLM to answer only from retrieved chunks and attach citations to every material claim.</p>
+          </article>
+          <article class="arch-node">
+            <span>06</span>
+            <h3>Evaluate + Review</h3>
+            <p>Check confidence, groundedness, source coverage, and unsupported claims before showing output to the client.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="code-section">
+        <div class="section-head compact-head">
+          <div>
+            <p class="eyebrow">Implementation Pattern</p>
+            <h2>Code-level signals.</h2>
+          </div>
+          <p>The demo keeps the implementation readable so a client can see what the engineering layer would look like underneath the interface.</p>
+        </div>
+        <div class="code-grid">
+          <article class="code-card">
+            <h3>Chunk payload</h3>
+            <pre><code>{
+  "chunk_id": "FIN-002.2",
+  "source_type": "SOP",
+  "metadata": {
+    "owner": "Finance Ops",
+    "updated_at": "2026-06-14",
+    "access_level": "internal"
+  },
+  "text": "Invoices missing a purchase order route..."
+}</code></pre>
+          </article>
+          <article class="code-card">
+            <h3>Retrieval pattern</h3>
+            <pre><code>matches = vector_db.query(
+    embedding=query_embedding,
+    top_k=6,
+    filter={"source_type": {"$in": allowed_types}}
+)
+
+context = rerank(query, matches)
+answer = llm.generate(schema=GroundedAnswer, context=context)</code></pre>
+          </article>
+        </div>
       </section>
     </main>
   </div>
+
+  <script src="rag-demo.js"></script>
 </body>
 </html>
