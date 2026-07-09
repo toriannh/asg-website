@@ -4,57 +4,156 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AI Analytics Dashboard | Aquila Solutions Group</title>
+  <meta name="description" content="Interactive AI analytics dashboard demo with social metrics, KPI reporting, trend analysis, AI monthly summaries, recommendations, and data pipeline status.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../case-study.css">
+  <link rel="stylesheet" href="analytics-demo.css">
 </head>
 <body>
-  <div class="shell">
+  <div class="shell analytics-shell">
     <header class="topbar">
       <a class="brand" href="../../">Aquila Solutions Group</a>
       <a class="back-link" href="../../#case-studies">Back to case studies</a>
     </header>
+
     <main>
-      <section class="hero">
+      <section class="dashboard-hero">
         <div>
-          <p class="eyebrow">Case Study | AI Analytics</p>
+          <p class="eyebrow">Interactive Demo | AI Analytics</p>
           <h1>AI Analytics Dashboard for Agencies</h1>
-          <p class="summary">A reporting surface that combines metrics, charts, trend detection, AI-written insight summaries, and client-ready recommendations.</p>
+          <p class="summary">A client reporting dashboard that combines social metrics, trend charts, API sync status, AI-written monthly insight summaries, and a recommendation queue.</p>
         </div>
-        <aside class="status-card">
-          <h2>Build Status</h2>
-          <ul class="status-list">
-            <li>Phase: project shell created</li>
-            <li>Next: choose analytics domain</li>
-            <li>Goal: interactive dashboard demo</li>
-          </ul>
+        <aside class="hero-system-card">
+          <p class="eyebrow">System Flow</p>
+          <ol class="flow-list">
+            <li>Pull platform metrics</li>
+            <li>Normalize channel data</li>
+            <li>Store client-month facts</li>
+            <li>Generate insight narrative</li>
+            <li>Publish review-ready report</li>
+          </ol>
         </aside>
       </section>
-      <section class="grid">
-        <article class="card">
-          <h2>Client Surface</h2>
-          <ul>
-            <li>KPI tiles and charts</li>
-            <li>Monthly insight narrative</li>
-            <li>Recommendation queue</li>
-          </ul>
+
+      <section class="dashboard-frame" aria-label="Interactive AI analytics dashboard">
+        <div class="dashboard-toolbar">
+          <div>
+            <p class="eyebrow">Client Workspace</p>
+            <h2 id="dashboardTitle">Monthly Performance Review</h2>
+          </div>
+          <div class="controls">
+            <label>
+              <span>Client</span>
+              <select id="clientSelect"></select>
+            </label>
+            <label>
+              <span>Month</span>
+              <select id="monthSelect"></select>
+            </label>
+            <button id="refreshButton" type="button">Refresh Report</button>
+          </div>
+        </div>
+
+        <div class="kpi-grid" id="kpiGrid"></div>
+
+        <div class="dashboard-grid">
+          <section class="panel trend-panel">
+            <div class="panel-title-row">
+              <div>
+                <p class="eyebrow">Performance Trend</p>
+                <h3>Reach and engagement by week</h3>
+              </div>
+              <span id="trendBadge" class="status-pill">Synced</span>
+            </div>
+            <div id="weeklyChart" class="weekly-chart" aria-label="Weekly performance bar chart"></div>
+          </section>
+
+          <section class="panel ai-panel">
+            <div class="panel-title-row">
+              <div>
+                <p class="eyebrow">AI Monthly Summary</p>
+                <h3>What changed and what to do next</h3>
+              </div>
+              <span id="modelBadge" class="status-pill model-pill">Claude summary</span>
+            </div>
+            <div id="aiSummary" class="ai-summary"></div>
+          </section>
+
+          <section class="panel channel-panel">
+            <p class="eyebrow">Channel Breakdown</p>
+            <h3>Platform contribution</h3>
+            <div id="channelRows" class="channel-rows"></div>
+          </section>
+
+          <section class="panel recommendation-panel">
+            <p class="eyebrow">Recommendation Queue</p>
+            <h3>Actions ready for review</h3>
+            <div id="recommendationList" class="recommendation-list"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="ops-grid">
+        <article class="panel data-panel">
+          <div class="panel-title-row">
+            <div>
+              <p class="eyebrow">Data Pipeline</p>
+              <h3>API sync and warehouse status</h3>
+            </div>
+            <span class="status-pill">Healthy</span>
+          </div>
+          <div id="pipelineRows" class="pipeline-rows"></div>
         </article>
-        <article class="card">
-          <h2>System Layer</h2>
-          <ul>
-            <li>API ingestion pattern</li>
-            <li>SQL analytics layer</li>
-            <li>LLM summary generation</li>
-          </ul>
+
+        <article class="panel report-panel">
+          <p class="eyebrow">Client Report Package</p>
+          <h3>What the agency can hand to a client</h3>
+          <ul id="deliverableList" class="deliverable-list"></ul>
         </article>
-        <article class="card">
-          <h2>Stack Signal</h2>
-          <p>Designed to show dashboard engineering, analytics storytelling, API integration, data modeling, and AI-generated business insight workflows.</p>
-          <p class="stack">React | APIs | SQL | Claude</p>
-        </article>
+      </section>
+
+      <section class="implementation-section">
+        <div class="section-head compact-head">
+          <div>
+            <p class="eyebrow">Implementation Pattern</p>
+            <h2>What this proves technically.</h2>
+          </div>
+          <p>The page is static for the portfolio, but the product shape mirrors a real agency analytics build: API ingestion, SQL models, chart-ready facts, LLM summary generation, and reviewable client outputs.</p>
+        </div>
+        <div class="code-grid">
+          <article class="code-card">
+            <h3>Metric fact model</h3>
+            <pre><code>select
+  client_id,
+  report_month,
+  channel,
+  sum(reach) as reach,
+  sum(engagements) as engagements,
+  sum(clicks) as clicks,
+  safe_divide(sum(engagements), sum(reach)) as engagement_rate
+from social_platform_events
+group by 1, 2, 3;</code></pre>
+          </article>
+          <article class="code-card">
+            <h3>AI summary contract</h3>
+            <pre><code>{
+  "client": "Maven Skincare",
+  "period": "June 2026",
+  "inputs": ["kpis", "channel_mix", "top_posts"],
+  "output_schema": {
+    "summary": "string",
+    "risks": ["string"],
+    "recommendations": ["string"]
+  }
+}</code></pre>
+          </article>
+        </div>
       </section>
     </main>
   </div>
+
+  <script src="analytics-demo.js"></script>
 </body>
 </html>
