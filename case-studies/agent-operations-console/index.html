@@ -4,57 +4,222 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AI Agent Operations Console | Aquila Solutions Group</title>
+  <meta name="description" content="Interactive case study showing a production-style AI agent console with tool calls, run state, review gates, structured outputs, and database-backed workflow design.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../case-study.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="../../eagle-brand-colors.svg">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="shell">
-    <header class="topbar">
-      <a class="brand" href="../../">Aquila Solutions Group</a>
-      <a class="back-link" href="../../#case-studies">Back to case studies</a>
-    </header>
-    <main>
-      <section class="hero">
-        <div>
-          <p class="eyebrow">Case Study | Agentic Workflows</p>
-          <h1>AI Agent Operations Console</h1>
-          <p class="summary">A client-facing control surface for agent runs: prompts, tool calls, status, confidence, review queues, and saved structured outputs.</p>
+  <header class="topbar">
+    <a class="brand" href="../../">Aquila Solutions Group</a>
+    <nav class="topnav" aria-label="Case study navigation">
+      <a href="../../#case-studies">Case Studies</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#code">Code</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Case Study | Agentic Workflows</p>
+        <h1>AI Agent Operations Console</h1>
+        <p class="summary">A working product surface for an AI agent that turns a business request into a tool-driven workflow, checks risk, saves structured output, and routes uncertain items to review.</p>
+      </div>
+      <aside class="hero-card" aria-label="Demo scope">
+        <p class="card-label">Demo Scope</p>
+        <h2>Ecommerce product-launch agent</h2>
+        <p>The demo uses synthetic market data and local browser logic, but the interface mirrors a production pattern: API route, orchestrator, tool registry, database state, and review queue.</p>
+      </aside>
+    </section>
+
+    <section class="console" aria-label="Agent operations console">
+      <div class="prompt-panel">
+        <div class="panel-heading">
+          <p class="eyebrow">Input</p>
+          <h2>Business request</h2>
         </div>
-        <aside class="status-card">
-          <h2>Build Status</h2>
-          <ul class="status-list">
-            <li>Phase: project shell created</li>
-            <li>Next: choose workflow domain</li>
-            <li>Goal: interactive agent run demo</li>
+
+        <div class="scenario-list" role="tablist" aria-label="Prompt scenarios">
+          <button class="scenario is-active" type="button" data-scenario="ecommerce">Ecommerce launch</button>
+          <button class="scenario" type="button" data-scenario="property">Property inquiry</button>
+          <button class="scenario" type="button" data-scenario="leads">Lead routing</button>
+        </div>
+
+        <label class="field-label" for="promptInput">Prompt</label>
+        <textarea id="promptInput" spellcheck="false"></textarea>
+
+        <div class="controls-grid">
+          <label>
+            <span>Model route</span>
+            <select id="modelRoute">
+              <option>Claude for reasoning, GPT for copy</option>
+              <option>Claude only</option>
+              <option>OpenAI only</option>
+            </select>
+          </label>
+          <label>
+            <span>Risk mode</span>
+            <select id="riskMode">
+              <option>Strict review gates</option>
+              <option>Balanced automation</option>
+              <option>Low-friction draft mode</option>
+            </select>
+          </label>
+        </div>
+
+        <button class="run-button" id="runButton" type="button">Run Agent</button>
+
+        <div class="contract-card">
+          <p class="card-label">Input contract</p>
+          <pre>{
+  "workflow": "product_launch",
+  "market": "etsy_shopify",
+  "required_checks": ["trademark", "margin", "novelty"],
+  "output_format": "reviewable_json"
+}</pre>
+        </div>
+      </div>
+
+      <div class="run-panel">
+        <div class="run-header">
+          <div>
+            <p class="eyebrow">Runtime</p>
+            <h2>Agent execution</h2>
+          </div>
+          <div class="run-state" id="runState">Ready</div>
+        </div>
+
+        <div class="progress-shell" aria-label="Run progress">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div class="timeline" id="timeline"></div>
+      </div>
+
+      <aside class="monitor-panel">
+        <div class="metric-grid">
+          <div class="metric">
+            <span id="toolCount">0</span>
+            <p>tools called</p>
+          </div>
+          <div class="metric">
+            <span id="confidenceScore">--</span>
+            <p>confidence</p>
+          </div>
+          <div class="metric">
+            <span id="reviewCount">0</span>
+            <p>review flags</p>
+          </div>
+          <div class="metric">
+            <span id="latency">0.0s</span>
+            <p>simulated latency</p>
+          </div>
+        </div>
+
+        <div class="detail-card">
+          <p class="card-label">Selected tool output</p>
+          <h3 id="detailTitle">No tool selected</h3>
+          <p id="detailBody">Run the agent, then select a step in the timeline to inspect its output, risk notes, and saved state.</p>
+        </div>
+
+        <div class="review-card">
+          <div class="panel-heading compact">
+            <p class="eyebrow">Review Queue</p>
+            <h2>Human checkpoints</h2>
+          </div>
+          <ul id="reviewQueue">
+            <li class="empty">No review items yet.</li>
           </ul>
-        </aside>
-      </section>
-      <section class="grid">
-        <article class="card">
-          <h2>Client Surface</h2>
-          <ul>
-            <li>Prompt composer</li>
-            <li>Run timeline</li>
-            <li>Review and approval states</li>
-          </ul>
+        </div>
+      </aside>
+    </section>
+
+    <section class="output-section">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Output</p>
+          <h2>Structured result package</h2>
+        </div>
+        <div class="output-actions">
+          <button id="approveButton" type="button">Approve Draft</button>
+          <button id="exportButton" type="button">Export JSON</button>
+        </div>
+      </div>
+
+      <div class="output-grid">
+        <article class="brief-card">
+          <p class="card-label">Launch brief</p>
+          <h3 id="briefTitle">Waiting for agent run</h3>
+          <p id="briefSummary">The generated brief will appear here after the workflow completes.</p>
+          <div class="brief-tags" id="briefTags"></div>
         </article>
-        <article class="card">
-          <h2>System Layer</h2>
-          <ul>
-            <li>Tool schemas</li>
-            <li>Structured JSON outputs</li>
-            <li>Retry and fallback logic</li>
-          </ul>
+        <article class="json-card">
+          <p class="card-label">Reviewable JSON</p>
+          <pre id="jsonOutput">{
+  "status": "not_started",
+  "message": "Run the agent to generate a structured output."
+}</pre>
         </article>
-        <article class="card">
-          <h2>Stack Signal</h2>
-          <p>Designed to show LLM orchestration, application engineering, database-backed task history, and production reliability patterns.</p>
-          <p class="stack">TypeScript | Supabase | Claude/OpenAI</p>
-        </article>
-      </section>
-    </main>
-  </div>
+      </div>
+    </section>
+
+    <section class="architecture" id="architecture">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Architecture</p>
+          <h2>Where the agent sits in production</h2>
+        </div>
+        <p class="section-copy">The client sees a console. Underneath it, the agent is a stateful service that routes requests, calls tools, persists run history, checks deterministic rules, and only expands automation after review metrics are reliable.</p>
+      </div>
+
+      <div class="architecture-flow" aria-label="Production architecture">
+        <div class="node">Client UI<br><span>Next.js console</span></div>
+        <div class="arrow">→</div>
+        <div class="node">API Route<br><span>auth + request contract</span></div>
+        <div class="arrow">→</div>
+        <div class="node node-strong">Agent Orchestrator<br><span>planner + tool router</span></div>
+        <div class="arrow">→</div>
+        <div class="node">Tool Registry<br><span>trend, catalog, compliance</span></div>
+        <div class="arrow">→</div>
+        <div class="node">Postgres State<br><span>runs, outputs, review queue</span></div>
+      </div>
+    </section>
+
+    <section class="code-section" id="code">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Code Pattern</p>
+          <h2>Deterministic gates around model output</h2>
+        </div>
+        <p class="section-copy">The important engineering move is deciding what belongs in the model and what belongs in code. The model can generate options; code should enforce thresholds, blocked terms, schema shape, and review routing.</p>
+      </div>
+      <pre class="code-block"><code>type AgentDecision = {
+  productTitle: string;
+  opportunityScore: number;
+  restrictedTerms: string[];
+  marginEstimate: number;
+  confidence: number;
+};
+
+function reviewGate(decision: AgentDecision) {
+  const flags = [];
+
+  if (decision.restrictedTerms.length) flags.push("restricted_term");
+  if (decision.marginEstimate < 0.42) flags.push("low_margin");
+  if (decision.confidence < 0.88) flags.push("low_confidence");
+
+  return {
+    canAutoPublish: flags.length === 0,
+    reviewRequired: flags.length > 0,
+    flags
+  };
+}</code></pre>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
 </body>
 </html>
