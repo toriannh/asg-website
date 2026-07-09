@@ -4,57 +4,183 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Document Intelligence Workbench | Aquila Solutions Group</title>
+  <meta name="description" content="Interactive document intelligence demo showing extraction, field confidence, source evidence, schema validation, and human review workflows.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../case-study.css">
+  <link rel="stylesheet" href="document-demo.css">
 </head>
 <body>
-  <div class="shell">
+  <div class="shell document-shell">
     <header class="topbar">
       <a class="brand" href="../../">Aquila Solutions Group</a>
       <a class="back-link" href="../../#case-studies">Back to case studies</a>
     </header>
+
     <main>
-      <section class="hero">
+      <section class="hero document-hero">
         <div>
-          <p class="eyebrow">Case Study | Document AI</p>
+          <p class="eyebrow">Interactive Demo | Document AI</p>
           <h1>AI Document Intelligence Workbench</h1>
-          <p class="summary">A reviewable document AI workflow for extracting fields, validating schema, showing confidence, and routing uncertain outputs to a human queue.</p>
+          <p class="summary">Review a document queue, inspect extracted fields, trace each value back to source evidence, and decide whether the output can be approved or needs human review.</p>
         </div>
         <aside class="status-card">
-          <h2>Build Status</h2>
+          <h2>Pipeline Shape</h2>
+          <div class="pipeline-strip" aria-label="Document extraction pipeline">
+            <span>Upload</span>
+            <span>OCR</span>
+            <span>Extract</span>
+            <span>Validate</span>
+            <span>Review</span>
+          </div>
           <ul class="status-list">
-            <li>Phase: project shell created</li>
-            <li>Next: choose document type</li>
-            <li>Goal: extraction and review demo</li>
+            <li>Document types: invoices, claims, contracts, and intake forms</li>
+            <li>Output: normalized JSON with confidence and evidence lines</li>
+            <li>Gate: schema validation and exception routing before approval</li>
           </ul>
         </aside>
       </section>
-      <section class="grid">
-        <article class="card">
-          <h2>Client Surface</h2>
-          <ul>
-            <li>Document queue</li>
-            <li>Extracted field table</li>
-            <li>Review and approval workflow</li>
-          </ul>
-        </article>
-        <article class="card">
-          <h2>System Layer</h2>
-          <ul>
-            <li>OCR and extraction</li>
-            <li>JSON schema validation</li>
-            <li>Confidence gates</li>
-          </ul>
-        </article>
-        <article class="card">
-          <h2>Stack Signal</h2>
-          <p>Designed to show document AI architecture, field-level evidence, validation, exception handling, and operational review controls.</p>
-          <p class="stack">Python | AWS | LLM APIs</p>
-        </article>
+
+      <section class="workbench" aria-label="Document intelligence workbench">
+        <aside class="queue-panel">
+          <div class="panel-heading">
+            <p class="eyebrow">Intake Queue</p>
+            <h2>Documents waiting for extraction.</h2>
+          </div>
+          <div id="documentQueue" class="document-queue"></div>
+        </aside>
+
+        <section class="document-panel" aria-label="Document preview">
+          <div class="document-toolbar">
+            <div>
+              <p class="eyebrow">Source Document</p>
+              <h2 id="documentTitle">Document preview</h2>
+            </div>
+            <span id="documentStatus" class="status-pill">Queued</span>
+          </div>
+          <div id="documentPreview" class="document-preview"></div>
+        </section>
+
+        <aside class="extraction-panel" aria-label="Extracted output">
+          <div class="panel-heading">
+            <p class="eyebrow">Structured Output</p>
+            <h2>Fields, confidence, and validation.</h2>
+          </div>
+
+          <div class="score-row">
+            <div>
+              <span>Overall confidence</span>
+              <strong id="overallConfidence">0%</strong>
+            </div>
+            <div>
+              <span>Schema status</span>
+              <strong id="schemaStatus">Pending</strong>
+            </div>
+          </div>
+
+          <div id="fieldTable" class="field-table"></div>
+
+          <div class="review-actions">
+            <button id="approveButton" type="button">Approve Output</button>
+            <button id="reviewButton" type="button">Send To Review</button>
+          </div>
+        </aside>
+      </section>
+
+      <section class="evidence-section">
+        <div class="section-head compact-head">
+          <div>
+            <p class="eyebrow">Evidence Layer</p>
+            <h2>Every field points back to a source line.</h2>
+          </div>
+          <p>For a real client, this is the part that makes document AI usable: the model output is not a black box. Each value has evidence, confidence, validation state, and a review path.</p>
+        </div>
+        <div id="evidenceGrid" class="evidence-grid"></div>
+      </section>
+
+      <section class="architecture-section">
+        <div class="section-head compact-head">
+          <div>
+            <p class="eyebrow">System Architecture</p>
+            <h2>Production document intelligence flow.</h2>
+          </div>
+          <p>The static demo mirrors a production implementation: files land in object storage, OCR extracts text, an LLM produces structured fields, validation gates the result, and reviewers approve exceptions.</p>
+        </div>
+        <div class="architecture-grid">
+          <article class="arch-card">
+            <span>01</span>
+            <h3>File Intake</h3>
+            <p>PDFs, scans, and images land in S3-style object storage with source metadata and intake status.</p>
+          </article>
+          <article class="arch-card">
+            <span>02</span>
+            <h3>OCR + Layout</h3>
+            <p>OCR captures text, tables, page coordinates, and layout blocks so extraction can point back to evidence.</p>
+          </article>
+          <article class="arch-card">
+            <span>03</span>
+            <h3>LLM Extraction</h3>
+            <p>A structured prompt returns normalized JSON, field confidence, source references, and unresolved values.</p>
+          </article>
+          <article class="arch-card">
+            <span>04</span>
+            <h3>Schema Gate</h3>
+            <p>JSON schema checks required fields, date formats, amount formats, allowed document types, and business rules.</p>
+          </article>
+          <article class="arch-card">
+            <span>05</span>
+            <h3>Review Queue</h3>
+            <p>Low-confidence or invalid fields route to a human reviewer with the evidence line already attached.</p>
+          </article>
+          <article class="arch-card">
+            <span>06</span>
+            <h3>System Write</h3>
+            <p>Approved outputs write to Postgres, trigger downstream workflow, and preserve audit lineage.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="code-section">
+        <div class="section-head compact-head">
+          <div>
+            <p class="eyebrow">Implementation Pattern</p>
+            <h2>Code-level signals.</h2>
+          </div>
+          <p>This is the engineering layer behind the visual: typed extraction outputs, deterministic validation, and explicit review routing.</p>
+        </div>
+        <div class="code-grid">
+          <article class="code-card">
+            <h3>Extraction schema</h3>
+            <pre><code>{
+  "document_id": "INV-1048",
+  "document_type": "vendor_invoice",
+  "fields": [
+    {
+      "name": "invoice_total",
+      "value": "4825.30",
+      "confidence": 0.96,
+      "evidence": "Total Amount Due: $4,825.30"
+    }
+  ],
+  "review_status": "needs_review"
+}</code></pre>
+          </article>
+          <article class="code-card">
+            <h3>Validation gate</h3>
+            <pre><code>for field in extraction.fields:
+    schema.validate(field)
+    if field.confidence < 0.88:
+        route_to_review(field)
+
+if extraction.has_required_fields() and not extraction.has_errors():
+    persist_to_postgres(extraction)</code></pre>
+          </article>
+        </div>
       </section>
     </main>
   </div>
+
+  <script src="document-demo.js"></script>
 </body>
 </html>
